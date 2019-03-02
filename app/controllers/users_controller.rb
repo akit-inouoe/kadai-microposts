@@ -38,7 +38,11 @@ class UsersController < ApplicationController
     counts(@user)
   end
   
-    private
+  def feed_microposts
+    Micropost.where(user_id: self.following_ids + [self.id])
+  end
+  
+  private
 
   def user_params
     params.require(:user).permit(:name, :email, :password, :password_confirmation)
