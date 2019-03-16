@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :require_user_logged_in, only: [:index, :show, :followings, :followers]
+  before_action :require_user_logged_in, only: [:index, :show, :followings, :followers, :likes]
   def index
     @users = User.all.page(params[:page])
   end
@@ -38,10 +38,16 @@ class UsersController < ApplicationController
     counts(@user)
   end
   
-  def feed_microposts
-    Micropost.where(user_id: self.following_ids + [self.id])
+  def likes
+    @user = User.find(params[:id])
+    #@micropost = @user.microposts.page(params[:page])
+    # Likeクラスのインスタンスが返ってくる
+    @like = @user.likes.page(params[:page])
+    @liked_microposts = @user.liked_microposts.page(params[:page])
+    # countsの引数として求められているのは、Userクラスのインスタンス
+    counts(@user)
   end
-  
+
   private
 
   def user_params
